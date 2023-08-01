@@ -1,2 +1,2 @@
-# virtual_chunchine
+# Virtual Chunchine
 Virtual Chunchine = Virtual Machine | In C
