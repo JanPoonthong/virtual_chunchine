@@ -77,8 +77,12 @@ Exception virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
             return EXCEPTION_STACK_OVERFLOW;
         }
 
+
         virtual_machine->stack[virtual_machine->stack_size] =
             instruction.operand;
+
+        assert(instruction.operand == virtual_machine->stack[virtual_machine->stack_size] && "ERROR: INSTRUCTION_PUSH");
+
         virtual_machine->stack_size++;
         break;
 
@@ -89,6 +93,9 @@ Exception virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
 
         virtual_machine->stack[virtual_machine->stack_size - 2] +=
             virtual_machine->stack[virtual_machine->stack_size - 1];
+
+        assert(virtual_machine->stack[virtual_machine->stack_size - 2] += virtual_machine->stack[virtual_machine->stack_size - 1] && "ERROR: INSTRUCTION_PLUS");
+
         virtual_machine->stack_size--;
         break;
 
