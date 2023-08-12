@@ -13,7 +13,6 @@ typedef enum {
     EXCEPTION_ILLEGAL_INSTRUCTION,
 } Exception;
 
-
 const char *exception_dump(Exception exception) {
     switch (exception) {
     case EXCEPTION_OK:
@@ -63,7 +62,6 @@ const char *instruction_type_string(Instruction instruction) {
     default:
         assert(0 && "instruction_type_string(): Unreachable");
     }
-
 }
 
 Exception virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
@@ -77,13 +75,8 @@ Exception virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
             return EXCEPTION_STACK_OVERFLOW;
         }
 
-
         virtual_machine->stack[virtual_machine->stack_size] =
             instruction.operand;
-
-        assert(69 == virtual_machine->stack[0] && "ERROR: INSTRUCTION_PUSH")
-
-        // assert(instruction.operand == virtual_machine->stack[virtual_machine->stack_size] && "ERROR: INSTRUCTION_PUSH");
 
         virtual_machine->stack_size++;
         break;
@@ -95,8 +88,6 @@ Exception virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
 
         virtual_machine->stack[virtual_machine->stack_size - 2] +=
             virtual_machine->stack[virtual_machine->stack_size - 1];
-
-        assert(virtual_machine->stack[virtual_machine->stack_size - 2] += virtual_machine->stack[virtual_machine->stack_size - 1] && "ERROR: INSTRUCTION_PLUS");
 
         virtual_machine->stack_size--;
         break;
@@ -170,6 +161,26 @@ Instruction program[] = {
     MAKE_INSTRUCTION_MINUS,
 };
 
+void TEST_virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
+                                              Instruction instruction) {
+    switch (instruction.type) {
+
+    case INSTRUCTION_PUSH:
+        assert(instruction.operand ==
+                   virtual_machine->stack[virtual_machine->stack_size - 1] &&
+               "ERROR: TEST_virtual_machine_execute_instruction() -> "
+               "INSTRUCTION_PUSH");
+
+    case INSTRUCTION_PLUS:
+        assert(
+            virtual_machine->stack[virtual_machine->stack_size] +
+                    virtual_machine->stack[virtual_machine->stack_size + 1] ==
+                virtual_machine->stack[virtual_machine->stack_size] &&
+            "ERROR: TEST_virtual_machine_execute_instruction() -> "
+            "INSTRUCTION_PLUS");
+    }
+}
+
 int main(void) {
     virtual_machine_dump(stdout, &virtual_machine);
 
@@ -177,6 +188,7 @@ int main(void) {
         Exception exception =
             virtual_machine_execute_instruction(&virtual_machine, program[i]);
         virtual_machine_dump(stdout, &virtual_machine);
+        TEST_virtual_machine_execute_instruction(&virtual_machine, program[i]);
         if (exception != EXCEPTION_OK) {
             fprintf(stderr, "Exception activated: %s\n",
                     exception_dump(exception));
