@@ -81,7 +81,9 @@ Exception virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
         virtual_machine->stack[virtual_machine->stack_size] =
             instruction.operand;
 
-        assert(instruction.operand == virtual_machine->stack[virtual_machine->stack_size] && "ERROR: INSTRUCTION_PUSH");
+        assert(69 == virtual_machine->stack[0] && "ERROR: INSTRUCTION_PUSH")
+
+        // assert(instruction.operand == virtual_machine->stack[virtual_machine->stack_size] && "ERROR: INSTRUCTION_PUSH");
 
         virtual_machine->stack_size++;
         break;
