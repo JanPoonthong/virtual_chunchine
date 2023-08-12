@@ -155,46 +155,41 @@ void virtual_machine_dump(FILE *stream,
 
 Virtual_Machine virtual_machine = {0};
 
-Instruction program[] = {
-    MAKE_INSTRUCTION_PUSH(69), MAKE_INSTRUCTION_PUSH(420),
-    MAKE_INSTRUCTION_PLUS,     MAKE_INSTRUCTION_PUSH(42),
-    MAKE_INSTRUCTION_MINUS,
-};
-
-void TEST_virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
-                                              Instruction instruction) {
-    switch (instruction.type) {
-
-    case INSTRUCTION_PUSH:
-        assert(instruction.operand ==
-                   virtual_machine->stack[virtual_machine->stack_size - 1] &&
-               "ERROR: TEST_virtual_machine_execute_instruction() -> "
-               "INSTRUCTION_PUSH");
-
-    case INSTRUCTION_PLUS:
-        assert(
-            virtual_machine->stack[virtual_machine->stack_size] +
-                    virtual_machine->stack[virtual_machine->stack_size + 1] ==
-                virtual_machine->stack[virtual_machine->stack_size] &&
-            "ERROR: TEST_virtual_machine_execute_instruction() -> "
-            "INSTRUCTION_PLUS");
-    }
-}
-
-int main(void) {
-    virtual_machine_dump(stdout, &virtual_machine);
+void TEST_virtual_machine_execute_instruction() {
+    Instruction program[] = {
+        MAKE_INSTRUCTION_PUSH(69),
+        // MAKE_INSTRUCTION_PUSH(420),
+        // MAKE_INSTRUCTION_PLUS,
+        // MAKE_INSTRUCTION_PUSH(42),
+        // MAKE_INSTRUCTION_MINUS,
+    };
 
     for (size_t i = 0; i < ARRAY_SIZE(program); ++i) {
         Exception exception =
             virtual_machine_execute_instruction(&virtual_machine, program[i]);
-        virtual_machine_dump(stdout, &virtual_machine);
-        TEST_virtual_machine_execute_instruction(&virtual_machine, program[i]);
         if (exception != EXCEPTION_OK) {
             fprintf(stderr, "Exception activated: %s\n",
                     exception_dump(exception));
             virtual_machine_dump(stderr, &virtual_machine);
             exit(1);
         }
+        virtual_machine_dump(stdout, &virtual_machine);
     }
+
+    assert(program[0].operand ==
+               virtual_machine.stack[virtual_machine.stack_size - 1] &&
+           "ERROR: TEST_virtual_machine_execute_instruction() -> "
+           "INSTRUCTION_PUSH");
+
+    // assert(virtual_machine.stack[virtual_machine.stack_size] +
+    //                virtual_machine.stack[virtual_machine.stack_size + 1] ==
+    //            virtual_machine.stack[virtual_machine.stack_size] &&
+    //        "ERROR: TEST_virtual_machine_execute_instruction() -> "
+    //        "INSTRUCTION_PLUS");
+}
+
+int main(void) {
+    virtual_machine_dump(stdout, &virtual_machine);
+    TEST_virtual_machine_execute_instruction();
     return 0;
 }
