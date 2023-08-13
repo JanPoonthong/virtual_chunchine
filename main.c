@@ -155,7 +155,7 @@ void virtual_machine_dump(FILE *stream,
 
 Virtual_Machine virtual_machine = {0};
 
-void TEST_virtual_machine_execute_instruction() {
+void TEST_virtual_machine_execute_instruction(void) {
     Instruction program[] = {
         MAKE_INSTRUCTION_PUSH(69),
         // MAKE_INSTRUCTION_PUSH(420),
