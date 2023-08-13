@@ -176,16 +176,11 @@ void TEST_virtual_machine_execute_instruction() {
         virtual_machine_dump(stdout, &virtual_machine);
     }
 
-    assert(program[0].operand ==
+    assert(69 ==
                virtual_machine.stack[virtual_machine.stack_size - 1] &&
            "ERROR: TEST_virtual_machine_execute_instruction() -> "
            "INSTRUCTION_PUSH");
 
-    // assert(virtual_machine.stack[virtual_machine.stack_size] +
-    //                virtual_machine.stack[virtual_machine.stack_size + 1] ==
-    //            virtual_machine.stack[virtual_machine.stack_size] &&
-    //        "ERROR: TEST_virtual_machine_execute_instruction() -> "
-    //        "INSTRUCTION_PLUS");
 }
 
 int main(void) {
