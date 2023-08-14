@@ -155,26 +155,19 @@ void virtual_machine_dump(FILE *stream,
 
 Virtual_Machine virtual_machine = {0};
 
-void TEST_virtual_machine_execute_instruction(void) {
-    Instruction program[] = {
-        MAKE_INSTRUCTION_PUSH(69),
-        // MAKE_INSTRUCTION_PUSH(420),
-        // MAKE_INSTRUCTION_PLUS,
-        // MAKE_INSTRUCTION_PUSH(42),
-        // MAKE_INSTRUCTION_MINUS,
-    };
-
-    for (size_t i = 0; i < ARRAY_SIZE(program); ++i) {
-        Exception exception =
-            virtual_machine_execute_instruction(&virtual_machine, program[i]);
-        if (exception != EXCEPTION_OK) {
-            fprintf(stderr, "Exception activated: %s\n",
-                    exception_dump(exception));
-            virtual_machine_dump(stderr, &virtual_machine);
-            exit(1);
-        }
-        virtual_machine_dump(stdout, &virtual_machine);
+void exception_handle(Exception exception) {
+    if (exception != EXCEPTION_OK) {
+        fprintf(stderr, "Exception activated: %s\n",
+                exception_dump(exception));
+        virtual_machine_dump(stderr, &virtual_machine);
+        exit(1);
     }
+}
+
+
+void TEST_INSTRUCTION_PUSH_virtual_machine_execute_instruction(void) {
+    virtual_machine_execute_instruction(&virtual_machine,
+            MAKE_INSTRUCTION_PUSH(69));
 
     assert(69 ==
                virtual_machine.stack[virtual_machine.stack_size - 1] &&
@@ -185,6 +178,7 @@ void TEST_virtual_machine_execute_instruction(void) {
 
 int main(void) {
     virtual_machine_dump(stdout, &virtual_machine);
-    TEST_virtual_machine_execute_instruction();
+    TEST_INSTRUCTION_PUSH_virtual_machine_execute_instruction();
+    virtual_machine_dump(stdout, &virtual_machine);
     return 0;
 }
