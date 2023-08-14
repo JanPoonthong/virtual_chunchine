@@ -54,7 +54,7 @@ const char *instruction_type_string(Instruction_Type instruction) {
     case INSTRUCTION_MINUS:
         return "MINUS";
     case INSTRUCTION_DIVISION:
-        return "MINUS";
+        return "DIVISION";
     case INSTRUCTION_MULTIPLICATION:
         return "MULTIPLICATION";
     case INSTRUCTION_PLUS:
@@ -149,9 +149,9 @@ void virtual_machine_dump(FILE *stream,
 #define MAKE_INSTRUCTION_MINUS                                                 \
     (Instruction) { .type = INSTRUCTION_MINUS }
 #define MAKE_INSTRUCTION_MULTIPLICATION                                        \
-    (Instruction) { .type = INSTRUCTION_MINUS }
+    (Instruction) { .type = INSTRUCTION_MULTIPLICATION }
 #define MAKE_INSTRUCTION_DIVISION                                              \
-    (Instruction) { .type = INSTRUCTION_MINUS }
+    (Instruction) { .type = INSTRUCTION_DIVISION }
 
 Virtual_Machine virtual_machine = {0};
 
@@ -163,18 +163,23 @@ void exception_handle(Exception exception) {
     }
 }
 
-void TEST_INSTRUCTION_PUSH_virtual_machine_execute_instruction(void) {
-    virtual_machine_execute_instruction(&virtual_machine,
-                                        MAKE_INSTRUCTION_PUSH(69));
-
-    assert(69 == virtual_machine.stack[virtual_machine.stack_size - 1] &&
-           "ERROR: TEST_virtual_machine_execute_instruction() -> "
-           "INSTRUCTION_PUSH");
-}
+Instruction program[] = {
+    MAKE_INSTRUCTION_PUSH(69),       MAKE_INSTRUCTION_PUSH(420),
+    MAKE_INSTRUCTION_PLUS,           MAKE_INSTRUCTION_PUSH(42),
+    MAKE_INSTRUCTION_MINUS,          MAKE_INSTRUCTION_PUSH(2),
+    MAKE_INSTRUCTION_MULTIPLICATION, MAKE_INSTRUCTION_PUSH(0),
+    MAKE_INSTRUCTION_DIVISION,
+};
 
 int main(void) {
     virtual_machine_dump(stdout, &virtual_machine);
-    TEST_INSTRUCTION_PUSH_virtual_machine_execute_instruction();
+
+    for (size_t i = 0; i < ARRAY_SIZE(program); ++i) {
+        Exception exception =
+            virtual_machine_execute_instruction(&virtual_machine, program[i]);
+        exception_handle(exception);
+        virtual_machine_dump(stdout, &virtual_machine);
+    }
     virtual_machine_dump(stdout, &virtual_machine);
     return 0;
 }
