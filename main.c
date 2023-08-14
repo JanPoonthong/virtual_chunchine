@@ -117,6 +117,8 @@ Exception virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
             return EXCEPTION_STACK_UNDERFLOW;
         }
 
+        // TODO(Jan): We may have to check division by 0
+
         virtual_machine->stack[virtual_machine->stack_size - 2] /=
             virtual_machine->stack[virtual_machine->stack_size - 1];
         virtual_machine->stack_size--;
