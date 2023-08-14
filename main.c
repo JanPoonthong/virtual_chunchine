@@ -46,8 +46,8 @@ typedef struct {
     Word operand;
 } Instruction;
 
-const char *instruction_type_string(Instruction instruction) {
-    switch (instruction.type) {
+const char *instruction_type_string(Instruction_Type instruction) {
+    switch (instruction) {
 
     case INSTRUCTION_PUSH:
         return "PUSH";
@@ -66,7 +66,7 @@ const char *instruction_type_string(Instruction instruction) {
 
 Exception virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
                                               Instruction instruction) {
-    printf("(%s) ", instruction_type_string(instruction));
+    printf("(%s) ", instruction_type_string(instruction.type));
 
     switch (instruction.type) {
 
