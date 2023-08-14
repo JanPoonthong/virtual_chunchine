@@ -157,23 +157,19 @@ Virtual_Machine virtual_machine = {0};
 
 void exception_handle(Exception exception) {
     if (exception != EXCEPTION_OK) {
-        fprintf(stderr, "Exception activated: %s\n",
-                exception_dump(exception));
+        fprintf(stderr, "Exception activated: %s\n", exception_dump(exception));
         virtual_machine_dump(stderr, &virtual_machine);
         exit(1);
     }
 }
 
-
 void TEST_INSTRUCTION_PUSH_virtual_machine_execute_instruction(void) {
     virtual_machine_execute_instruction(&virtual_machine,
-            MAKE_INSTRUCTION_PUSH(69));
+                                        MAKE_INSTRUCTION_PUSH(69));
 
-    assert(69 ==
-               virtual_machine.stack[virtual_machine.stack_size - 1] &&
+    assert(69 == virtual_machine.stack[virtual_machine.stack_size - 1] &&
            "ERROR: TEST_virtual_machine_execute_instruction() -> "
            "INSTRUCTION_PUSH");
-
 }
 
 int main(void) {
