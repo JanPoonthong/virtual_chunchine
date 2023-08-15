@@ -11,6 +11,7 @@ typedef enum {
     EXCEPTION_STACK_OVERFLOW,
     EXCEPTION_STACK_UNDERFLOW,
     EXCEPTION_ILLEGAL_INSTRUCTION,
+    EXCEPTION_DIVISION_BY_ZERO,
 } Exception;
 
 const char *exception_dump(Exception exception) {
@@ -23,6 +24,8 @@ const char *exception_dump(Exception exception) {
         return "EXCEPTION_STACK_UNDERFLOW";
     case EXCEPTION_ILLEGAL_INSTRUCTION:
         return "EXCEPTION_ILLEGAL_INSTRUCTION";
+    case EXCEPTION_DIVISION_BY_ZERO:
+        return "EXCEPTION_DIVISION_BY_ZERO";
     default:
         assert(0 && "exception_dump(): Unreachable");
     }
@@ -48,7 +51,6 @@ typedef struct {
 
 const char *instruction_type_string(Instruction_Type instruction) {
     switch (instruction) {
-
     case INSTRUCTION_PUSH:
         return "PUSH";
     case INSTRUCTION_MINUS:
@@ -66,7 +68,6 @@ const char *instruction_type_string(Instruction_Type instruction) {
 
 Exception virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
                                               Instruction instruction) {
-    printf("(%s) ", instruction_type_string(instruction.type));
 
     switch (instruction.type) {
 
@@ -117,7 +118,9 @@ Exception virtual_machine_execute_instruction(Virtual_Machine *virtual_machine,
             return EXCEPTION_STACK_UNDERFLOW;
         }
 
-        // TODO(Jan): We may have to check division by 0
+        if (virtual_machine->stack[virtual_machine->stack_size - 1] == 0) {
+            return EXCEPTION_DIVISION_BY_ZERO;
+        }
 
         virtual_machine->stack[virtual_machine->stack_size - 2] /=
             virtual_machine->stack[virtual_machine->stack_size - 1];
@@ -180,6 +183,7 @@ int main(void) {
         Exception exception =
             virtual_machine_execute_instruction(&virtual_machine, program[i]);
         exception_handle(exception);
+        printf("(%s) ", instruction_type_string(program[i].type));
         virtual_machine_dump(stdout, &virtual_machine);
     }
     virtual_machine_dump(stdout, &virtual_machine);
